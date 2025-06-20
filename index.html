@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bitácora Electrónica CAPUFE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    table {
+      margin-top: 30px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Bitácora Electrónica CAPUFE</h1>
+
+<form id="bitacoraForm">
+  <label>Fecha y Hora:</label>
+  <input type="datetime-local" id="fechaHora" required>
+
+  <label>Nombre del Operador:</label>
+  <input type="text" id="operador" required>
+
+  <label>Caseta/Tramo:</label>
+  <input type="text" id="caseta" required>
+
+  <label>Tipo de Evento:</label>
+  <select id="evento" required>
+    <option value="">Seleccione</option>
+    <option value="Mantenimiento">Mantenimiento</option>
+    <option value="Incidente">Incidente</option>
+    <option value="Reporte de Usuario">Reporte de Usuario</option>
+    <option value="Supervisión">Supervisión</option>
+  </select>
+
+  <label>Observaciones:</label>
+  <textarea id="observaciones" rows="4"></textarea>
+
+  <button type="submit">Guardar Registro</button>
+</form>
+
+<table id="tablaBitacora">
+  <thead>
+    <tr>
+      <th>Fecha y Hora</th>
+      <th>Operador</th>
+      <th>Caseta</th>
+      <th>Evento</th>
+      <th>Observaciones</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const form = document.getElementById('bitacoraForm');
+  const tabla = document.getElementById('tablaBitacora').querySelector('tbody');
+
+  function guardarEnLocalStorage(registros) {
+    localStorage.setItem('bitacoraCapufe', JSON.stringify(registros));
+  }
+
+  function cargarDesdeLocalStorage() {
+    const registros = JSON.parse(localStorage.getItem('bitacoraCapufe')) || [];
+    registros.forEach(agregarFila);
+  }
+
+  function agregarFila(data) {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `
+      <td>${data.fechaHora}</td>
+      <td>${data.operador}</td>
+      <td>${data.caseta}</td>
+      <td>${data.evento}</td>
+      <td>${data.observaciones}</td>
+    `;
+    tabla.appendChild(fila);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const registro = {
+      fechaHora: document.getElementById('fechaHora').value,
+      operador: document.getElementById('operador').value,
+      caseta: document.getElementById('caseta').value,
+      evento: document.getElementById('evento').value,
+      observaciones: document.getElementById('observaciones').value
+    };
+
+    agregarFila(registro);
+
+    const registros = JSON.parse(localStorage.getItem('bitacoraCapufe')) || [];
+    registros.push(registro);
+    guardarEnLocalStorage(registros);
+
+    form.reset();
+  });
+
+  cargarDesdeLocalStorage();
+</script>
+
+</body>
+</html>
