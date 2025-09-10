@@ -23,6 +23,23 @@ class Program
     static long?  SesionId    = null;
 
     static void Main()
+    IF OBJECT_ID('cobro.Transacciones') IS NULL
+CREATE TABLE cobro.Transacciones (
+    TransId        BIGINT        IDENTITY(1,1) PRIMARY KEY,
+    FechaHora      DATETIME2(0)   OBJECT_ID('cobro.vw_TransaccionesValidas')
+    PlazaId        INT               DROP VIEW cobro.vw_TransaccionesValidas;
+    CarrilId       INT           Transacciones
+    SesionId       BIGINT         CREATE VIEW             -- sesión/turno
+    OperadorId     INT           turno,
+    ClaseVehicular TINYINT       Asignada,
+    FormaPago      CHAR(1)       Efectivo,IAVE,          -- 'E' efectivo, 'T' telepeaje
+    Tarifa         DECIMAL(10,2) T=!,          -- tarifa base sin IVA
+    Descuento      DECIMAL(10,2) NOT NULL DEFAULT 0,
+    IVA            DECIMAL(10,2) NOT NULL DEFAULT 0,
+    Importe        DECIMAL(10,2) NOT NULL,          -- total cobrado (Tarifa - Descuento + IVA)
+    Estado         VARCHAR(20)   Asignado DEFAULT 'VALIDO', -- o 'CANCELADO'
+    TagId          NVARCHAR(64)  NULL,              -- si aplica telepeaje
+    RefVideo       NVARCHAR(200) NULL            
     {
         var (resumen, porClase, porPago) = EjecutarSP();
 
